@@ -1,4 +1,4 @@
-const ohm = require('ohm-js');
+import ohm from 'ohm-js';
 
 const GRAMMAR_DEFINITION = `
 ActionString {
@@ -227,7 +227,7 @@ function resolveCommand(commandName, commandArguments) {
     let command = {
         commandType: commandName,
     };
-    for (argument of commandArguments.parse()) {
+    for (const argument of commandArguments.parse()) {
         command[argument[0]] = argument[1];
     }
     return command;
@@ -255,7 +255,7 @@ function toSignedFloat(sign, float) {
 
 function mergeActions(actions) {
     let simplifiedData = {};
-    for (action of actions) {
+    for (const action of actions) {
         if (action.trigger && !(action.trigger in simplifiedData)) {
             // Only the first action should be kept
             const mergedCommands = mergeCommands(action.commands);
@@ -269,8 +269,8 @@ function mergeActions(actions) {
 }
 
 function mergeCommands(commands) {
-    mergedCommands = new Map();
-    for (command of commands) {
+    let mergedCommands = new Map();
+    for (const command of commands) {
         if (command.commandType !== 'examine' && Object.keys(command).length == 1) {
             // Remove commands without parameters
             continue;
@@ -287,7 +287,7 @@ function mergeCommands(commands) {
     return Array.from(mergedCommands.values());
 }
 
-class AWActionParser {
+export default class AWActionParser {
 
     constructor() {
         this.grammar = ohm.grammar(GRAMMAR_DEFINITION);
@@ -486,5 +486,3 @@ class AWActionParser {
     }
 
 }
-
-module.exports = AWActionParser;

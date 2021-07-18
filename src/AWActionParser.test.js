@@ -1,6 +1,6 @@
-const AWActionParser = require('./AWActionParser');
+import AWActionParser from './AWActionParser';
 
-parser = new AWActionParser();
+const parser = new AWActionParser();
 
 test('empty string', () => {
     expect(parser.parse('')).toStrictEqual({});
