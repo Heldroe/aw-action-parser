@@ -1,0 +1,23 @@
+{
+  "name": "aw-action-parser",
+  "version": "1.0.0",
+  "description": "A JavaScript parser for ActiveWorlds object action strings",
+  "main": "src/AWActionParser.js",
+  "dependencies": {
+    "ohm-js": "^15.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Heldroe/aw-action-parser.git"
+  },
+  "author": "David Guerrero <heldroe@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Heldroe/aw-action-parser/issues"
+  },
+  "homepage": "https://github.com/Heldroe/aw-action-parser#readme"
+}
