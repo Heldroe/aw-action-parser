@@ -346,3 +346,52 @@ test('create visible yes', () => {
         ]
     });
 });
+
+// Colors
+test('empty create color', () => {
+    expect(parser.parse('create color')).toStrictEqual({});
+});
+
+test('create color f', () => {
+    expect(parser.parse('create color f')).toStrictEqual({
+        create: [
+            {
+                commandType: "color",
+                color: "f",
+            }
+        ]
+    });
+});
+
+test('create color ff', () => {
+    expect(parser.parse('create color ff')).toStrictEqual({
+        create: [
+            {
+                commandType: "color",
+                color: "ff",
+            }
+        ]
+    });
+});
+
+test('create color fff', () => {
+    expect(parser.parse('create color fff')).toStrictEqual({
+        create: [
+            {
+                commandType: "color",
+                color: "fff",
+            }
+        ]
+    });
+});
+
+test('create long color', () => {
+    expect(parser.parse('create color foobarbazaaaaaaaaaaaaaaaaaa')).toStrictEqual({
+        create: [
+            {
+                commandType: "color",
+                color: "foobarbazaaaaaaaaaaaaaaaaaa",
+            }
+        ]
+    });
+});
