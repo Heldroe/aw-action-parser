@@ -1,11 +1,25 @@
 const AWActionParser = require('./AWActionParser');
 
+parser = new AWActionParser();
+
 test('empty string', () => {
-    expect(new AWActionParser().parse('')).toStrictEqual({});
+    expect(parser.parse('')).toStrictEqual({});
+});
+
+test('invalid string', () => {
+    expect(parser.parse('foobar')).toStrictEqual({});
+});
+
+test('invalid string has debug information', () => {
+    expect(parser.debug('foobar').length).toBeGreaterThan(0);
+});
+
+test('good string has empty debug information', () => {
+    expect(parser.debug('create color green;').length).toBe(0);
 });
 
 test('create color green', () => {
-    expect(new AWActionParser().parse('create color green')).toStrictEqual({
+    expect(parser.parse('create color green')).toStrictEqual({
         create: [
             {
                 commandType: "color",
@@ -16,7 +30,7 @@ test('create color green', () => {
 });
 
 test('whitespace and semicolons do not matter', () => {
-    expect(new AWActionParser().parse('create   color        abcdef;;;;;;')).toStrictEqual({
+    expect(parser.parse('create   color        abcdef;;;;;;')).toStrictEqual({
         create: [
             {
                 commandType: "color",
@@ -27,7 +41,7 @@ test('whitespace and semicolons do not matter', () => {
 });
 
 test('multiple color applies last only', () => {
-    expect(new AWActionParser().parse('create color green, color red, color blue')).toStrictEqual({
+    expect(parser.parse('create color green, color red, color blue')).toStrictEqual({
         create: [
             {
                 commandType: "color",
@@ -37,8 +51,19 @@ test('multiple color applies last only', () => {
     });
 });
 
+test('multiple names applies last only', () => {
+    expect(parser.parse('create name foo, name bar, name baz')).toStrictEqual({
+        create: [
+            {
+                commandType: "name",
+                targetName: "baz",
+            }
+        ]
+    });
+});
+
 test('multiple create applies first only', () => {
-    expect(new AWActionParser().parse('create color green; create color red')).toStrictEqual({
+    expect(parser.parse('create color green; create color red')).toStrictEqual({
         create: [
             {
                 commandType: "color",
