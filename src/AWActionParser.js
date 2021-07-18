@@ -186,7 +186,7 @@ ActionString {
   SignCommand = MultiArgumentCommand<caseInsensitive<"sign">, SignArgument>
   SignArgument = colorParameter | bcolorParameter | nameParameter | signText
   bcolorParameter = namedParameter<"bcolor", colorName>
-  signStringDelimiter = "\""
+  signStringDelimiter = "\\""
   signText = signStringDelimiter (~signStringDelimiter any)* signStringDelimiter
 
   // Teleport command (TODO: check relative/absolute altitude behavior on AW)
@@ -253,7 +253,7 @@ function toSignedFloat(sign, float) {
 }
 
 function mergeActions(actions) {
-    simplifiedData = {};
+    let simplifiedData = {};
     for (action of actions) {
         if (!(action.trigger in simplifiedData)) {
             // Only the first action should be kept
@@ -478,4 +478,4 @@ class AWActionParser {
 
 }
 
-module.exports = { AWActionParser };
+module.exports = AWActionParser;

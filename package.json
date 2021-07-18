@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "A JavaScript parser for ActiveWorlds object action strings",
   "main": "src/AWActionParser.js",
+  "type": "module",
   "dependencies": {
     "ohm-js": "^15.5.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^27.0.6"
+  },
   "scripts": {
-    "test": "exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
