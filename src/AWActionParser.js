@@ -11,6 +11,7 @@ ActionString {
             | activate
             | bump
             | adone
+            | end
   create    = caseInsensitive<"create">
   activate  = caseInsensitive<"activate">
   bump      = caseInsensitive<"bump">
@@ -255,7 +256,7 @@ function toSignedFloat(sign, float) {
 function mergeActions(actions) {
     let simplifiedData = {};
     for (action of actions) {
-        if (!(action.trigger in simplifiedData)) {
+        if (action.trigger && !(action.trigger in simplifiedData)) {
             // Only the first action should be kept
             simplifiedData[action.trigger] = mergeCommands(action.commands);
         }
