@@ -146,3 +146,24 @@ test('examine command returns properly', () => {
         ]
     });
 });
+
+test('multiple color with different names applies all', () => {
+    expect(parser.parse('create color green, color red name=foo, color blue name=bar')).toStrictEqual({
+        create: [
+            {
+                commandType: "color",
+                color: "green",
+            },
+            {
+                commandType: "color",
+                color: "red",
+                targetName: "foo",
+            },
+            {
+                commandType: "color",
+                color: "blue",
+                targetName: "bar",
+            }
+        ]
+    });
+});
