@@ -23,7 +23,7 @@ test('create color green', () => {
         create: [
             {
                 commandType: "color",
-                color: "green",
+                color: {r: 0, g: 255, b: 0},
             }
         ]
     });
@@ -34,7 +34,7 @@ test('whitespace and semicolons do not matter', () => {
         create: [
             {
                 commandType: "color",
-                color: "abcdef",
+                color: {r: 171, g: 205, b: 239},
             }
         ]
     });
@@ -45,7 +45,7 @@ test('multiple color applies last only', () => {
         create: [
             {
                 commandType: "color",
-                color: "blue",
+                color: {r: 0, g: 0, b: 255},
             }
         ]
     });
@@ -67,7 +67,7 @@ test('multiple create applies first only', () => {
         create: [
             {
                 commandType: "color",
-                color: "green",
+                color: {r: 0, g: 255, b: 0},
             }
         ]
     });
@@ -197,16 +197,16 @@ test('multiple color with different names applies all', () => {
         create: [
             {
                 commandType: "color",
-                color: "green",
+                color: {r: 0, g: 255, b: 0},
             },
             {
                 commandType: "color",
-                color: "red",
+                color: {r: 255, g: 0, b: 0},
                 targetName: "foo",
             },
             {
                 commandType: "color",
-                color: "blue",
+                color: {r: 0, g: 0, b: 255},
                 targetName: "bar",
             }
         ]
@@ -357,7 +357,7 @@ test('create color f', () => {
         create: [
             {
                 commandType: "color",
-                color: "f",
+                color: {r: 0, g: 0, b: 15},
             }
         ]
     });
@@ -368,7 +368,7 @@ test('create color ff', () => {
         create: [
             {
                 commandType: "color",
-                color: "ff",
+                color: {r: 0, g: 0, b: 255},
             }
         ]
     });
@@ -379,7 +379,7 @@ test('create color fff', () => {
         create: [
             {
                 commandType: "color",
-                color: "fff",
+                color: {r: 0, g: 15, b: 255},
             }
         ]
     });
@@ -390,8 +390,16 @@ test('create long color', () => {
         create: [
             {
                 commandType: "color",
-                color: "foobarbazaaaaaaaaaaaaaaaaaa",
+                color: {r: 0, g: 0, b: 15},
             }
         ]
     });
+});
+
+test('invalid color results in no action', () => {
+    expect(parser.parse('create color poorchoice')).toStrictEqual({});
+});
+
+test('no color results in no action', () => {
+    expect(parser.parse('create color')).toStrictEqual({});
 });
