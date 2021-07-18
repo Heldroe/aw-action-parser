@@ -133,6 +133,51 @@ test('rotate can handle funny floats', () => {
     });
 });
 
+test('move with 1 number is about Y', () => {
+    expect(parser.parse('create move 1')).toStrictEqual({
+        create: [
+            {
+                commandType: "move",
+                distance: {
+                    x: 0,
+                    y: 1,
+                    z: 0,
+                },
+            }
+        ]
+    });
+});
+
+test('move with 2 numbers is about X and Y', () => {
+    expect(parser.parse('create move 1 2')).toStrictEqual({
+        create: [
+            {
+                commandType: "move",
+                distance: {
+                    x: 1,
+                    y: 2,
+                    z: 0,
+                },
+            }
+        ]
+    });
+});
+
+test('move with 3 numbers is about X, Y and Z', () => {
+    expect(parser.parse('create move 1 2 3')).toStrictEqual({
+        create: [
+            {
+                commandType: "move",
+                distance: {
+                    x: 1,
+                    y: 2,
+                    z: 3,
+                },
+            }
+        ]
+    });
+});
+
 test('empty command does not return anything', () => {
     expect(parser.parse('create rotate')).toStrictEqual({});
 });

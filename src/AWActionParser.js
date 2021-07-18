@@ -233,7 +233,7 @@ function resolveCommand(commandName, commandArguments) {
     return command;
 }
 
-function resolveRotateCoordinates(coordinates) {
+function resolveIncompleteCoordinates(coordinates) {
     if (coordinates.length == 1) {
         return {x: 0, y: coordinates[0], z: 0};
     } else if (coordinates.length == 2) {
@@ -359,10 +359,10 @@ export default class AWActionParser {
                 return {commandType: 'examine'}
             },
             RotateDistances(coordinates) {
-                return ['speed', resolveRotateCoordinates(coordinates.parse())];
+                return ['speed', resolveIncompleteCoordinates(coordinates.parse())];
             },
             MoveDistances(coordinates) {
-                return ['moveDistances', resolveRotateCoordinates(coordinates.parse())];
+                return ['distance', resolveIncompleteCoordinates(coordinates.parse())];
             },
             WarpCommand(commandName, coordinates) {
                 const wCoords = coordinates.parse();
