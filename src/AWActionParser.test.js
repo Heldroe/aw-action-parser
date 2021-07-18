@@ -72,3 +72,77 @@ test('multiple create applies first only', () => {
         ]
     });
 });
+
+test('rotate with 1 number is about Y', () => {
+    expect(parser.parse('create rotate 1')).toStrictEqual({
+        create: [
+            {
+                commandType: "rotate",
+                speed: {
+                    x: 0,
+                    y: 1,
+                    z: 0,
+                },
+            }
+        ]
+    });
+});
+
+test('rotate with 2 numbers is about X and Y', () => {
+    expect(parser.parse('create rotate 1 2')).toStrictEqual({
+        create: [
+            {
+                commandType: "rotate",
+                speed: {
+                    x: 1,
+                    y: 2,
+                    z: 0,
+                },
+            }
+        ]
+    });
+});
+
+test('rotate with 3 numbers is about X, Y and Z', () => {
+    expect(parser.parse('create rotate 1 2 3')).toStrictEqual({
+        create: [
+            {
+                commandType: "rotate",
+                speed: {
+                    x: 1,
+                    y: 2,
+                    z: 3,
+                },
+            }
+        ]
+    });
+});
+
+test('rotate can handle funny floats', () => {
+    expect(parser.parse('create rotate -.234 234.903 -12.093')).toStrictEqual({
+        create: [
+            {
+                commandType: "rotate",
+                speed: {
+                    x: -0.234,
+                    y: 234.903,
+                    z: -12.093,
+                },
+            }
+        ]
+    });
+});
+
+test('empty command does not return anything', () => {
+    expect(parser.parse('create rotate')).toStrictEqual({});
+});
+
+test('examine command returns properly', () => {
+    expect(parser.parse('create examine')).toStrictEqual({
+        create: [
+            {
+                commandType: "examine",
+            }
+        ]
+    });
+});

@@ -258,7 +258,11 @@ function mergeActions(actions) {
     for (action of actions) {
         if (action.trigger && !(action.trigger in simplifiedData)) {
             // Only the first action should be kept
-            simplifiedData[action.trigger] = mergeCommands(action.commands);
+            const mergedCommands = mergeCommands(action.commands);
+            if (mergedCommands.length > 0) {
+                // Only add action if there are commands inside
+                simplifiedData[action.trigger] = mergedCommands;
+            }
         }
     }
     return simplifiedData;
@@ -267,6 +271,10 @@ function mergeActions(actions) {
 function mergeCommands(commands) {
     mergedCommands = new Map();
     for (command of commands) {
+        if (command.commandType !== 'examine' && Object.keys(command).length == 1) {
+            // Remove commands without parameters
+            continue;
+        }
         if (command.commandType == 'name') {
             // Keep last name command only
             mergedCommands.set(command.commandType, command);
@@ -351,7 +359,7 @@ class AWActionParser {
                 return {commandType: 'examine'}
             },
             RotateDistances(coordinates) {
-                return ['rotateDistances', resolveRotateCoordinates(coordinates.parse())];
+                return ['speed', resolveRotateCoordinates(coordinates.parse())];
             },
             MoveDistances(coordinates) {
                 return ['moveDistances', resolveRotateCoordinates(coordinates.parse())];
