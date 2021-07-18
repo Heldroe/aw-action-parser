@@ -212,3 +212,137 @@ test('multiple color with different names applies all', () => {
         ]
     });
 });
+
+// Solid booleans
+test('create solid off', () => {
+    expect(parser.parse('create solid off')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create solid false', () => {
+    expect(parser.parse('create solid false')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create solid no', () => {
+    expect(parser.parse('create solid no')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create solid on', () => {
+    expect(parser.parse('create solid on')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: true,
+            }
+        ]
+    });
+});
+
+test('create solid true', () => {
+    expect(parser.parse('create solid true')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: true,
+            }
+        ]
+    });
+});
+
+test('create solid yes', () => {
+    expect(parser.parse('create solid yes')).toStrictEqual({
+        create: [
+            {
+                commandType: "solid",
+                value: true,
+            }
+        ]
+    });
+});
+
+// Visible booleans
+test('create visible off', () => {
+    expect(parser.parse('create visible off')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create visible false', () => {
+    expect(parser.parse('create visible false')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create visible no', () => {
+    expect(parser.parse('create visible no')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: false,
+            }
+        ]
+    });
+});
+
+test('create visible on', () => {
+    expect(parser.parse('create visible on')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: true,
+            }
+        ]
+    });
+});
+
+test('create visible true', () => {
+    expect(parser.parse('create visible true')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: true,
+            }
+        ]
+    });
+});
+
+test('create visible yes', () => {
+    expect(parser.parse('create visible yes')).toStrictEqual({
+        create: [
+            {
+                commandType: "visible",
+                value: true,
+            }
+        ]
+    });
+});
