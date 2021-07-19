@@ -1,0 +1,6 @@
+.github/
+coverage/
+build/
+jest.config.*
+
+src/*.test.js
