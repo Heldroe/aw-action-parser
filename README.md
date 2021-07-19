@@ -8,14 +8,17 @@ This library parses [ActiveWorlds object action strings](http://wiki.activeworld
 
 ## Usage
 
+```js
     import { AWActionParser } from 'aw-action-parser';
 
     const parser = new AWActionParser();
 
     parser.parse('create color blue, sign "hello!"; activate color salmon, rotate -.5 loop nosync');
+```
 
 The `parse()` function will then return an object looking like this:
 
+```js
     {
       create: [ { commandType: 'color', color: { r: 0, g: 0, b: 255 } } ],
       activate: [
@@ -28,6 +31,7 @@ The `parse()` function will then return an object looking like this:
         }
       ]
     }
+```
 
 ## Features
 
