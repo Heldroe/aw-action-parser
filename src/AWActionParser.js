@@ -360,7 +360,7 @@ function mergeCommands(commands) {
     return Array.from(mergedCommands.values());
 }
 
-export default class AWActionParser {
+class AWActionParser {
 
     constructor() {
         this.grammar = ohm.grammar(GRAMMAR_DEFINITION);
@@ -561,3 +561,5 @@ export default class AWActionParser {
     }
 
 }
+
+export { AWActionParser };

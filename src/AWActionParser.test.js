@@ -1,4 +1,4 @@
-import AWActionParser from './AWActionParser';
+import { AWActionParser } from './AWActionParser';
 
 const parser = new AWActionParser();
 
