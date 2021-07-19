@@ -36,9 +36,16 @@ The `parse()` function will then return an object looking like this:
 
 ## Missing features
 
-* General
+* Impossible actions on AW (e.g. `create teleport ...`) are not currently filtered out
+* `teleport` / `warp`
     * Better output format for coordinates, altitudes and direction
 * `sign`
     * Non-terminated strings support: `create sign "hey`
     * Non-quoted single-word strings: `create sign hey`
     * Unicode strings: `create sign "こんにちは!"`
+
+## Testing
+
+Unit tests are essential for this kind of project and you can run them with:
+
+    npm test
