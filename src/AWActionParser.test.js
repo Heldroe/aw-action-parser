@@ -403,3 +403,28 @@ test('invalid color results in no action', () => {
 test('no color results in no action', () => {
     expect(parser.parse('create color')).toStrictEqual({});
 });
+
+test('create texture with mask', () => {
+    expect(parser.parse('create texture fleurs19 mask=fleurs19m')).toStrictEqual({
+        create: [
+            {
+                commandType: "texture",
+                texture: "fleurs19",
+                mask: "fleurs19m",
+            }
+        ]
+    });
+})
+
+test('create texture with mask and tag', () => {
+    expect(parser.parse('create texture fleurs19 mask=fleurs19m tag=abcd')).toStrictEqual({
+        create: [
+            {
+                commandType: "texture",
+                texture: "fleurs19",
+                mask: "fleurs19m",
+                tag: "abcd",
+            }
+        ]
+    });
+})

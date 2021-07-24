@@ -61,6 +61,8 @@ ActionString {
 
   // Resource target
   resourceTarget = (alnum | "." | "/" | ":" | "_" | "-" | "+" | "%" | "?" | "=" | "[" | "]" | "&" | "~" | "!" | "@" | "*" | "(" | ")")+
+  // Basic resource target for textures, masks etc
+  basicResourceTarget = (alnum | "." | "_" | "-")+
 
   // Command parameter (e.g. name=foo, tag=bar)
   namedParameter<paramName, paramSyntax> = paramName "=" paramSyntax
@@ -86,13 +88,13 @@ ActionString {
   // Texture command
   TextureCommand = MultiArgumentCommand<caseInsensitive<"texture">, TextureArgument>
   TextureArgument = maskParameter | tagParameter | nameParameter | textureName
-  textureName = (alnum | "." | "_" | "-")+
+  textureName = basicResourceTarget
 
   maskParameter = namedParameter<"mask", maskName>
-  maskName = alnum+
+  maskName = basicResourceTarget
 
   tagParameter = namedParameter<"tag", tagName>
-  tagName = alnum+
+  tagName = basicResourceTarget
 
   // Color command
   ColorCommand  = MultiArgumentCommand<caseInsensitive<"color">, ColorArgument>
@@ -392,7 +394,10 @@ class AWActionParser {
                 return floatType.parse();
             },
             textureName(input) {
-                return ['texture', input.parse().join('')];
+                return ['texture', input.parse()];
+            },
+            basicResourceTarget(input) {
+                return input.parse().join('');
             },
             resourceTarget(input) {
                 return ['resource', input.parse().join('')]
