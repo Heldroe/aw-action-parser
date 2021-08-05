@@ -537,6 +537,13 @@ class AWActionParser {
                     return ['loop', false];
                 }
             },
+            resetStatus(status) {
+                if (status.parse() == 'reset') {
+                    return ['reset', true];
+                } else {
+                    return ['reset', false];
+                }
+            },
             signText(_, text, __) {
                 return text.parse();
             },

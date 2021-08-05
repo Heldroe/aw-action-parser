@@ -414,7 +414,7 @@ test('create texture with mask', () => {
             }
         ]
     });
-})
+});
 
 test('create texture with mask and tag', () => {
     expect(parser.parse('create texture fleurs19 mask=fleurs19m tag=abcd')).toStrictEqual({
@@ -427,4 +427,24 @@ test('create texture with mask and tag', () => {
             }
         ]
     });
-})
+});
+
+test('create rotate & move with reset', () => {
+    expect(parser.parse('create rotate 0 0 0 reset, move 0 0 2 loop reset time=5 wait=1')).toStrictEqual({
+        create: [
+            {
+                commandType: "rotate",
+                speed: {x: 0, y: 0, z: 0},
+                reset: true,
+            },
+            {
+                commandType: "move",
+                distance: {x: 0, y: 0, z: 2},
+                loop: true,
+                reset: true,
+                time: 5,
+                wait: 1,
+            },
+        ]
+    });
+});
