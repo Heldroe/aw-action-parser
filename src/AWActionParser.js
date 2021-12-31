@@ -229,7 +229,7 @@ function resolveCommand(commandName, commandArguments) {
     let command = {
         commandType: commandName,
     };
-    for (const argument of commandArguments.parse()) {
+    for (const argument of commandArguments.children.map(c => c.parse())) {
         if (argument && argument.length == 2) {
             command[argument[0]] = argument[1];
         }
@@ -250,7 +250,7 @@ function resolveIncompleteCoordinates(coordinates) {
 }
 
 function toSignedFloat(sign, float) {
-    if (sign.parse() == '-') {
+    if (sign.children.map(c => c.parse()) == '-') {
         return -1 * float.parse();
     } else {
         return float.parse();
@@ -370,12 +370,12 @@ class AWActionParser {
         this.semantics = this.grammar.createSemantics();
         this.semantics.addOperation('parse', {
             Actions(actions, _) {
-                return actions.asIteration().parse();
+                return actions.asIteration().children.map(c => c.parse());
             },
             Action(trigger, commands, _) {
                 return {
                     trigger: trigger.parse(),
-                    commands: commands.asIteration().parse()
+                    commands: commands.asIteration().children.map(c => c.parse())
                 }
             },
             MultiArgumentCommand(commandName, commandArguments) {
@@ -385,10 +385,10 @@ class AWActionParser {
                 return parseInt(input.parse().join(''));
             },
             float_fract(integral, _, fractional) {
-                return parseFloat([].concat(integral.parse(), ['.'], fractional.parse()).join(''));
+                return parseFloat([].concat(integral.children.map(c => c.parse()), ['.'], fractional.children.map(c => c.parse())).join(''));
             },
             float_whole(number) {
-                return parseFloat(number.parse().join(''))
+                return parseFloat(number.children.map(c => c.parse()).join(''))
             },
             float(floatType) {
                 return floatType.parse();
@@ -397,13 +397,13 @@ class AWActionParser {
                 return ['texture', input.parse()];
             },
             basicResourceTarget(input) {
-                return input.parse().join('');
+                return input.children.map(c => c.parse()).join('');
             },
             resourceTarget(input) {
                 return ['resource', input.parse().join('')]
             },
             objectName(name) {
-                return name.parse().join('');
+                return name.children.map(c => c.children.map(c => c.parse())).join('');
             },
             nameArgument(name) {
                 return ['targetName', name.parse()];
@@ -428,7 +428,7 @@ class AWActionParser {
                 return ['value', boolean.parse()];
             },
             colorName(color) {
-                return colorStringToRGB(color.parse().join(''));
+                return colorStringToRGB(color.children.map(c => c.children.map(d => d.parse()).join('')).join(''));
             },
             colorArgument(color) {
                 if (color.parse()) {
@@ -439,10 +439,10 @@ class AWActionParser {
                 return {commandType: 'examine'}
             },
             RotateDistances(coordinates) {
-                return ['speed', resolveIncompleteCoordinates(coordinates.parse())];
+                return ['speed', resolveIncompleteCoordinates(coordinates.children.map(c => c.parse()))];
             },
             MoveDistances(coordinates) {
-                return ['distance', resolveIncompleteCoordinates(coordinates.parse())];
+                return ['distance', resolveIncompleteCoordinates(coordinates.children.map(c => c.parse()))];
             },
             WarpCommand(commandName, coordinates) {
                 const wCoords = coordinates.parse();
@@ -548,9 +548,9 @@ class AWActionParser {
                 return text.parse();
             },
             invalidCommand(command) {
-                return {commandType: 'invalid', commandText: command.parse().join('')};
+                return {commandType: 'invalid', commandText: command.children.map(c => c.parse()).join('')};
             },
-            _terminal() { return this.primitiveValue; }
+            _terminal() { return this.sourceString; }
         });
     }
 
