@@ -379,10 +379,10 @@ class AWActionParser {
                 }
             },
             MultiArgumentCommand(commandName, commandArguments) {
-                return resolveCommand(commandName.parse(), commandArguments);
+                return resolveCommand(commandName.children.map(c => c.parse())[0], commandArguments);
             },
             positiveInteger(input) {
-                return parseInt(input.parse().join(''));
+                return parseInt(input.children.map(c => c.parse()).join(''));
             },
             float_fract(integral, _, fractional) {
                 return parseFloat([].concat(integral.children.map(c => c.parse()), ['.'], fractional.children.map(c => c.parse())).join(''));
@@ -400,13 +400,13 @@ class AWActionParser {
                 return input.children.map(c => c.parse()).join('');
             },
             resourceTarget(input) {
-                return ['resource', input.parse().join('')]
+                return ['resource', input.children.map(c => c.parse())]
             },
             objectName(name) {
-                return name.children.map(c => c.children.map(c => c.parse())).join('');
+                return name.children.map(c => c.children.map(d => d.parse()).join('')).join('');
             },
             nameArgument(name) {
-                return ['targetName', name.parse()];
+                return ['targetName', name.children.map(c => c.children.map(d => d.parse()).join('')).join('')];
             },
             namedParameter(parameterName, _, value) {
                 return [parameterName.parse(), value.parse()]
@@ -456,8 +456,8 @@ class AWActionParser {
             WorldCoordinates(coordinates, altitude, direction) {
                 return {
                     coordinates: coordinates.parse(),
-                    altitude: altitude.parse()[0],
-                    direction: direction ? direction.parse()[0] : null,
+                    altitude: altitude.children.map(c => c.parse())[0],
+                    direction: direction ? direction.children.map(c => c.parse())[0] : null,
                 }
             },
             RelativeCoordinates(x, y) {
@@ -491,18 +491,18 @@ class AWActionParser {
                 }
             },
             TeleportCommand(commandName, worldName, worldCoordinates) {
-                const world = worldName.parse();
+                const world = worldName.children.map(c => c.parse());
                 return {
                     commandType: 'teleport',
                     worldName: world.length > 0 ? world : undefined,
-                    coordinates: worldCoordinates.parse(),
+                    coordinates: worldCoordinates.children.map(c => c.parse()),
                 }
             },
             worldName(worldString) {
                 return worldString.parse();
             },
             worldString(firstPart, secondPart) {
-                return firstPart.parse().join('') + secondPart.parse().join('');
+                return firstPart.children.map(c => c.parse()).join('') + secondPart.children.map(c => c.parse()).join('');
             },
             signedFloat(sign, float) {
                 return toSignedFloat(sign, float);
@@ -511,7 +511,7 @@ class AWActionParser {
                 return toSignedFloat(sign, float);
             },
             altitude(sign, float, _) {
-                if (sign.parse().length > 0) {
+                if (sign.children.map(c => c.parse()).length > 0) {
                     return {
                         altitudeType: 'relative',
                         value: toSignedFloat(sign, float),
@@ -545,7 +545,7 @@ class AWActionParser {
                 }
             },
             signText(_, text, __) {
-                return text.parse();
+                return text.children.map(c => c.parse());
             },
             invalidCommand(command) {
                 return {commandType: 'invalid', commandText: command.children.map(c => c.parse()).join('')};
