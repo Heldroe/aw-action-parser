@@ -303,6 +303,8 @@ const PRESET_COLORS = {
     yellow:      rgb(255, 255,   0),
 };
 
+const ALLOWED_EMPTY_COMMANDS = ['examine', 'sign']
+
 function colorStringToRGB(colorString) {
     if (colorString in PRESET_COLORS) {
         return PRESET_COLORS[colorString];
@@ -346,7 +348,7 @@ function mergeActions(actions) {
 function mergeCommands(commands) {
     let mergedCommands = new Map();
     for (const command of commands) {
-        if (command.commandType !== 'examine' && Object.keys(command).length == 1) {
+        if (!ALLOWED_EMPTY_COMMANDS.includes(command.commandType) && Object.keys(command).length == 1) {
             // Remove commands without parameters
             continue;
         }

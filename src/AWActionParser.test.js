@@ -448,3 +448,13 @@ test('create rotate & move with reset', () => {
         ]
     });
 });
+
+test('empty create sign returns properly', () => {
+    expect(parser.parse('create sign')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+            }
+        ]
+    });
+});
