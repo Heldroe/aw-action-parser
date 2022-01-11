@@ -458,3 +458,26 @@ test('empty create sign returns properly', () => {
         ]
     });
 });
+
+test('create sign with args', () => {
+    expect(parser.parse('create sign color=yellow bcolor=pink')).toStrictEqual({
+        create: [
+            {
+                color: {b: 0, g: 255, r: 255},
+                bcolor: {b: 199, g: 110, r: 255},
+                commandType: "sign",
+            }
+        ]
+    });
+});
+
+test('create picture', () => {
+    expect(parser.parse('create picture http://www.example.com/sample.jpg')).toStrictEqual({
+        create: [
+            {
+                commandType: "picture",
+                resource: "http://www.example.com/sample.jpg"
+            }
+        ]
+    });
+});

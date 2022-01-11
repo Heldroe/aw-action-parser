@@ -402,7 +402,7 @@ class AWActionParser {
                 return input.children.map(c => c.parse()).join('');
             },
             resourceTarget(input) {
-                return ['resource', input.children.map(c => c.parse())]
+                return ['resource', input.children.map(c => c.parse()).join('')]
             },
             objectName(name) {
                 return name.children.map(c => c.children.map(d => d.parse()).join('')).join('');

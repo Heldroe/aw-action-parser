@@ -1,11 +1,11 @@
 {
   "name": "aw-action-parser",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "A JavaScript parser for ActiveWorlds object action strings",
   "main": "src/AWActionParser.js",
   "type": "module",
   "dependencies": {
-    "ohm-js": "^16.1.0"
+    "ohm-js": "^16.2.0"
   },
   "devDependencies": {
     "jest": "^27.4.7"
