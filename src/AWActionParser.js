@@ -28,6 +28,7 @@ ActionString {
             | VisibleCommand
             | MoveCommand
             | RotateCommand
+            | ScaleCommand
             | LightCommand
             | NoiseCommand
             | PictureCommand
@@ -141,6 +142,17 @@ ActionString {
                  | nameParameter
   RotateDistances = signedFloat+
 
+  // Scale command
+  ScaleCommand = MultiArgumentCommand<caseInsensitive<"scale">, ScaleArgument>
+  ScaleArgument = ScaleFactor
+                 | syncStatus
+                 | timeParameter
+                 | loopStatus
+                 | resetStatus
+                 | waitParameter
+                 | nameParameter
+  ScaleFactor = signedFloat+
+
   // Corona command
   CoronaCommand = MultiArgumentCommand<caseInsensitive<"corona">, CoronaArgument>
   CoronaArgument = maskParameter | sizeParameter | nameParameter | resourceTarget
@@ -237,15 +249,41 @@ function resolveCommand(commandName, commandArguments) {
     return command;
 }
 
-function resolveIncompleteCoordinates(coordinates) {
-    if (coordinates.length == 1) {
-        return {x: 0, y: coordinates[0], z: 0};
-    } else if (coordinates.length == 2) {
-        return {x: coordinates[0], y: coordinates[1], z: 0};
-    } else if (coordinates.length == 3) {
-        return {x: coordinates[0], y: coordinates[1], z: coordinates[2]};
+function resolveIncompleteCoordinates(coordinates, isScale) {
+    let [x, y, z] = [coordinates[0], coordinates[1], coordinates[2]];
+
+    if (coordinates.length === 1) {
+      return {x: 0, y: x, z: 0};
+    } else if (coordinates.length === 2) {
+      return {x, y, z: 0};
+    } else if (coordinates.length === 3) {
+      return {x, y, z};
     } else {
-        return {x: 0, y: 0, z: 0};
+      return {x: 0, y: 0, z: 0};
+    }
+}
+
+function resolveIncompleteScaleCoordinates(coordinates) {
+    let [minScale, maxScale] = [0.1, 10];
+    let [x, y, z] = [coordinates[0], coordinates[1], coordinates[2]];
+
+    if (x <= 0)
+      x = 1;
+    if (y <= 0)
+      y = 1;
+    if (z <= 0)
+      z = 1;
+
+    [x,y,z] = [x < 0.1 ? 0.1 : x, y < 0.1 ? 0.1 : y, z < 0.1 ? 0.1 : z];
+
+    if (coordinates.length === 1) {
+      return {x: x, y: x, z: x};
+    } else if (coordinates.length === 2) {
+      return {x, y, z: 1};
+    } else if (coordinates.length === 3) {
+      return {x, y, z};
+    } else {
+      return {x, y, z};
     }
 }
 
@@ -445,6 +483,9 @@ class AWActionParser {
             },
             MoveDistances(coordinates) {
                 return ['distance', resolveIncompleteCoordinates(coordinates.children.map(c => c.parse()))];
+            },
+            ScaleFactor(coordinates) {
+                return ['factor', resolveIncompleteScaleCoordinates(coordinates.children.map(c => c.parse()))];
             },
             WarpCommand(commandName, coordinates) {
                 const wCoords = coordinates.parse();
