@@ -481,3 +481,123 @@ test('create picture', () => {
         ]
     });
 });
+
+test('scale with 1 number scales in all 3 axes', () => {
+    expect(parser.parse('create scale 2')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 2,
+                    y: 2,
+                    z: 2,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with 2 numbers scales X and Y, with Z staying to a default of 0', () => {
+    expect(parser.parse('create scale 2 2')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 2,
+                    y: 2,
+                    z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with 3 numbers scales X, Y and Z separately', () => {
+    expect(parser.parse('create scale 3 4 5')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 3,
+                    y: 4,
+                    z: 5,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with 1 number at a negative value defaults them to 1', () => {
+    expect(parser.parse('create scale -2')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 1,
+                    z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with 2 numbers at a negative value defaults them to 1', () => {
+    expect(parser.parse('create scale -2 -3')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 1,
+                    z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with 3 numbers, first and last negative but second positive = 1, n, 1', () => {
+    expect(parser.parse('create scale -2 3 -4')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 3,
+                    z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale with four values should only process the first three', () => {
+    expect(parser.parse('create scale -3 4 -8 1300')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 4,
+                    z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale out of bounds gets clamped properly', () => {
+    expect(parser.parse('create scale -3 0.01 10')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 0.2,
+                    z: 5,
+                },
+            }
+        ]
+    });
+});
