@@ -237,6 +237,17 @@ function cleanActionString(actionString) {
     return actionString.replace(UNWANTED_CHARS, "");
 }
 
+// Scale command properties, see http://wiki.activeworlds.com/index.php?title=Scale
+const SCALE_MIN = 0.2;
+const SCALE_MAX = 5;
+function clampScale(value) {
+    if (value > 0) {
+        return Math.max(Math.min(value, SCALE_MAX), SCALE_MIN);
+    } else {
+        return 1;
+    }
+}
+
 function resolveCommand(commandName, commandArguments) {
     let command = {
         commandType: commandName,
@@ -249,7 +260,7 @@ function resolveCommand(commandName, commandArguments) {
     return command;
 }
 
-function resolveIncompleteCoordinates(coordinates, isScale) {
+function resolveIncompleteCoordinates(coordinates) {
     let [x, y, z] = [coordinates[0], coordinates[1], coordinates[2]];
 
     if (coordinates.length === 1) {
@@ -264,17 +275,7 @@ function resolveIncompleteCoordinates(coordinates, isScale) {
 }
 
 function resolveIncompleteScaleCoordinates(coordinates) {
-    let [minScale, maxScale] = [0.1, 10];
-    let [x, y, z] = [coordinates[0], coordinates[1], coordinates[2]];
-
-    if (x <= 0)
-      x = 1;
-    if (y <= 0)
-      y = 1;
-    if (z <= 0)
-      z = 1;
-
-    [x,y,z] = [x < 0.1 ? 0.1 : x, y < 0.1 ? 0.1 : y, z < 0.1 ? 0.1 : z];
+    let [x, y, z] = coordinates.map(clampScale, coordinates);
 
     if (coordinates.length === 1) {
       return {x: x, y: x, z: x};
