@@ -573,14 +573,29 @@ test('scale with 3 numbers, first and last negative but second positive = 1, n, 
 });
 
 test('scale with four values should only process the first three', () => {
-    expect(parser.parse('create scale -3 7 -8 1300')).toStrictEqual({
+    expect(parser.parse('create scale -3 4 -8 1300')).toStrictEqual({
         create: [
             {
                 commandType: "scale",
                 factor: {
                     x: 1,
-                    y: 7,
+                    y: 4,
                     z: 1,
+                },
+            }
+        ]
+    });
+});
+
+test('scale out of bounds gets clamped properly', () => {
+    expect(parser.parse('create scale -3 0.01 10')).toStrictEqual({
+        create: [
+            {
+                commandType: "scale",
+                factor: {
+                    x: 1,
+                    y: 0.2,
+                    z: 5,
                 },
             }
         ]
