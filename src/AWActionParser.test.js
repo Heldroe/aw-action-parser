@@ -601,3 +601,128 @@ test('scale out of bounds gets clamped properly', () => {
         ]
     });
 });
+
+test('sign text with quotes', () => {
+    expect(parser.parse('create sign "i am the sign text"')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "i am the sign text",
+            }
+        ]
+    });
+});
+
+test('sign text without quotes', () => {
+    expect(parser.parse('create sign i_am_the_sign_text')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "i_am_the_sign_text",
+            }
+        ]
+    });
+});
+
+test('sign text with unquoted unicode', () => {
+    expect(parser.parse('create sign 🙃')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "🙃",
+            }
+        ]
+    });
+});
+
+test('sign text with quoted unicode', () => {
+    expect(parser.parse('create sign "こんにちは!"')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "こんにちは!",
+            }
+        ]
+    });
+});
+
+test('sign text with quoted unicode and other things after', () => {
+    expect(parser.parse('create sign "こんにちは!"; activate sign 🙃')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "こんにちは!",
+            }
+        ],
+        activate: [
+            {
+                commandType: "sign",
+                text: "🙃",
+            }
+        ]
+    });
+});
+
+test('sign text with only one quote', () => {
+    expect(parser.parse('create sign "; activate something')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                text: "; activate something",
+            }
+        ]
+    });
+});
+
+test('invalid sign text without quotes', () => {
+    expect(parser.parse('create sign i am the sign text, light brightness=1')).toStrictEqual({
+        create: [
+            {
+                commandType: "light",
+                brightness: 1,
+            }
+        ]
+    });
+});
+
+test('complex example', () => {
+    expect(parser.parse('create sign bcolor=white color=black;activate sign Rickrolled bcolor=white color=black, media http://127.0.0.1/music/spam/rickroll/Never_gonna_give_you_up.mp3 name=Mplayer radius=1000')).toStrictEqual({
+        create: [
+            {
+                commandType: "sign",
+                bcolor: {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                },
+                color: {
+                    r: 0,
+                    g: 0,
+                    b: 0,
+                },
+            },
+        ],
+        activate: [
+            {
+                commandType: "sign",
+                text: "Rickrolled",
+                bcolor: {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                },
+                color: {
+                    r: 0,
+                    g: 0,
+                    b: 0,
+                },
+            },
+            {
+                commandType: "media",
+                radius: 1000,
+                resource: "http://127.0.0.1/music/spam/rickroll/Never_gonna_give_you_up.mp3",
+                targetName: "Mplayer",
+            }
+        ]
+    });
+});

@@ -41,12 +41,9 @@ The `parse()` function will then return an object looking like this:
 ## Missing features
 
 * Impossible actions on AW (e.g. `create teleport ...`) are not currently filtered out
+* Some commands like `media` support only a few parameters
 * `teleport` / `warp`
     * Better output format for coordinates, altitudes and direction
-* `sign`
-    * Non-terminated strings support: `create sign "hey`
-    * Non-quoted single-word strings: `create sign hey`
-    * Unicode strings: `create sign "こんにちは!"`
 
 ## Testing
 

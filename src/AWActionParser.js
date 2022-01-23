@@ -195,14 +195,16 @@ ActionString {
 
   // Media command
   MediaCommand  = MultiArgumentCommand<caseInsensitive<"media">, MediaArgument>
-  MediaArgument = resourceTarget
+  MediaArgument = nameParameter | radiusParameter | resourceTarget
 
   // Sign command
   SignCommand = MultiArgumentCommand<caseInsensitive<"sign">, SignArgument>
   SignArgument = colorParameter | bcolorParameter | nameParameter | signText
   bcolorParameter = namedParameter<"bcolor", colorName>
-  signStringDelimiter = "\\""
-  signText = signStringDelimiter (~signStringDelimiter any)* signStringDelimiter
+  signText = signQuotedText | signUnquotedText
+  signStringQuote = "\\""
+  signUnquotedText = (~";" ~"," ~" " any)+
+  signQuotedText = signStringQuote (~signStringQuote any)* signStringQuote?
 
   // Teleport command (TODO: check relative/absolute altitude behavior on AW)
   TeleportCommand  = caseInsensitive<"teleport"> worldName? WorldCoordinates?
@@ -254,7 +256,12 @@ function resolveCommand(commandName, commandArguments) {
     };
     for (const argument of commandArguments.children.map(c => c.parse())) {
         if (argument && argument.length == 2) {
-            command[argument[0]] = argument[1];
+            if (command[argument[0]] !== undefined) {
+                // Can't set the same parameter multiple times
+                return null;
+            } else {
+                command[argument[0]] = argument[1];
+            }
         }
     }
     return command;
@@ -387,6 +394,10 @@ function mergeActions(actions) {
 function mergeCommands(commands) {
     let mergedCommands = new Map();
     for (const command of commands) {
+        if (command === null) {
+            // Remove invalid commands (usually due to duplicated parameters)
+            continue;
+        }
         if (!ALLOWED_EMPTY_COMMANDS.includes(command.commandType) && Object.keys(command).length == 1) {
             // Remove commands without parameters
             continue;
@@ -588,8 +599,14 @@ class AWActionParser {
                     return ['reset', false];
                 }
             },
-            signText(_, text, __) {
-                return text.children.map(c => c.parse());
+            signText(text) {
+                return ['text', text.parse()];
+            },
+            signQuotedText(_, text, __) {
+                return text.children.map(c => c.parse()).join('');
+            },
+            signUnquotedText(text) {
+                return text.children.map(c => c.parse()).join('');
             },
             invalidCommand(command) {
                 return {commandType: 'invalid', commandText: command.children.map(c => c.parse()).join('')};
