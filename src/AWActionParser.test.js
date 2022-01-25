@@ -24,8 +24,8 @@ test('create color green', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 255, b: 0},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -35,8 +35,8 @@ test('whitespace and semicolons do not matter', () => {
             {
                 commandType: 'color',
                 color: {r: 171, g: 205, b: 239},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -46,8 +46,8 @@ test('multiple color applies last only', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 0, b: 255},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -57,8 +57,8 @@ test('multiple names applies last only', () => {
             {
                 commandType: 'name',
                 targetName: 'baz',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -68,8 +68,8 @@ test('multiple create applies first only', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 255, b: 0},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -83,8 +83,8 @@ test('rotate with 1 number is about Y', () => {
                     y: 1,
                     z: 0,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -98,8 +98,8 @@ test('rotate with 2 numbers is about X and Y', () => {
                     y: 2,
                     z: 0,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -113,8 +113,8 @@ test('rotate with 3 numbers is about X, Y and Z', () => {
                     y: 2,
                     z: 3,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -128,8 +128,8 @@ test('rotate can handle funny floats', () => {
                     y: 234.903,
                     z: -12.093,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -143,8 +143,8 @@ test('move with 1 number is about Y', () => {
                     y: 1,
                     z: 0,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -158,8 +158,8 @@ test('move with 2 numbers is about X and Y', () => {
                     y: 2,
                     z: 0,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -173,8 +173,8 @@ test('move with 3 numbers is about X, Y and Z', () => {
                     y: 2,
                     z: 3,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -187,8 +187,8 @@ test('examine command returns properly', () => {
         create: [
             {
                 commandType: 'examine',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -208,8 +208,8 @@ test('multiple color with different names applies all', () => {
                 commandType: 'color',
                 color: {r: 0, g: 0, b: 255},
                 targetName: 'bar',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -220,8 +220,8 @@ test('create solid off', () => {
             {
                 commandType: 'solid',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -231,8 +231,8 @@ test('create solid false', () => {
             {
                 commandType: 'solid',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -242,8 +242,8 @@ test('create solid no', () => {
             {
                 commandType: 'solid',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -253,8 +253,8 @@ test('create solid on', () => {
             {
                 commandType: 'solid',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -264,8 +264,8 @@ test('create solid true', () => {
             {
                 commandType: 'solid',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -275,8 +275,8 @@ test('create solid yes', () => {
             {
                 commandType: 'solid',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -287,8 +287,8 @@ test('create visible off', () => {
             {
                 commandType: 'visible',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -298,8 +298,8 @@ test('create visible false', () => {
             {
                 commandType: 'visible',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -309,8 +309,8 @@ test('create visible no', () => {
             {
                 commandType: 'visible',
                 value: false,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -320,8 +320,8 @@ test('create visible on', () => {
             {
                 commandType: 'visible',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -331,8 +331,8 @@ test('create visible true', () => {
             {
                 commandType: 'visible',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -342,8 +342,8 @@ test('create visible yes', () => {
             {
                 commandType: 'visible',
                 value: true,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -358,8 +358,8 @@ test('create color f', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 0, b: 15},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -369,8 +369,8 @@ test('create color ff', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 0, b: 255},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -380,8 +380,8 @@ test('create color fff', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 15, b: 255},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -391,8 +391,8 @@ test('create long color', () => {
             {
                 commandType: 'color',
                 color: {r: 0, g: 0, b: 15},
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -411,8 +411,8 @@ test('create texture with mask', () => {
                 commandType: 'texture',
                 texture: 'fleurs19',
                 mask: 'fleurs19m',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -424,8 +424,8 @@ test('create texture with mask and tag', () => {
                 texture: 'fleurs19',
                 mask: 'fleurs19m',
                 tag: 'abcd',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -445,7 +445,7 @@ test('create rotate & move with reset', () => {
                 time: 5,
                 wait: 1,
             },
-        ]
+        ],
     });
 });
 
@@ -454,8 +454,8 @@ test('empty create sign returns properly', () => {
         create: [
             {
                 commandType: 'sign',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -466,8 +466,8 @@ test('create sign with args', () => {
                 color: {b: 0, g: 255, r: 255},
                 bcolor: {b: 199, g: 110, r: 255},
                 commandType: 'sign',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -476,9 +476,9 @@ test('create picture', () => {
         create: [
             {
                 commandType: 'picture',
-                resource: 'http://www.example.com/sample.jpg'
-            }
-        ]
+                resource: 'http://www.example.com/sample.jpg',
+            },
+        ],
     });
 });
 
@@ -492,8 +492,8 @@ test('scale with 1 number scales in all 3 axes', () => {
                     y: 2,
                     z: 2,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -507,8 +507,8 @@ test('scale with 2 numbers scales X and Y, with Z staying to a default of 0', ()
                     y: 2,
                     z: 1,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -522,8 +522,8 @@ test('scale with 3 numbers scales X, Y and Z separately', () => {
                     y: 4,
                     z: 5,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -537,8 +537,8 @@ test('scale with 1 number at a negative value defaults them to 1', () => {
                     y: 1,
                     z: 1,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -552,8 +552,8 @@ test('scale with 2 numbers at a negative value defaults them to 1', () => {
                     y: 1,
                     z: 1,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -567,8 +567,8 @@ test('scale with 3 numbers, first and last negative but second positive = 1, n, 
                     y: 3,
                     z: 1,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -582,8 +582,8 @@ test('scale with four values should only process the first three', () => {
                     y: 4,
                     z: 1,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -597,8 +597,8 @@ test('scale out of bounds gets clamped properly', () => {
                     y: 0.2,
                     z: 5,
                 },
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -608,8 +608,8 @@ test('sign text with quotes', () => {
             {
                 commandType: 'sign',
                 text: 'i am the sign text',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -619,8 +619,8 @@ test('sign text without quotes', () => {
             {
                 commandType: 'sign',
                 text: 'i_am_the_sign_text',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -630,8 +630,8 @@ test('sign text with unquoted unicode', () => {
             {
                 commandType: 'sign',
                 text: '🙃',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -641,8 +641,8 @@ test('sign text with quoted unicode', () => {
             {
                 commandType: 'sign',
                 text: 'こんにちは!',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -652,14 +652,14 @@ test('sign text with quoted unicode and other things after', () => {
             {
                 commandType: 'sign',
                 text: 'こんにちは!',
-            }
+            },
         ],
         activate: [
             {
                 commandType: 'sign',
                 text: '🙃',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -669,8 +669,8 @@ test('sign text with only one quote', () => {
             {
                 commandType: 'sign',
                 text: '; activate something',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -680,8 +680,8 @@ test('invalid sign text without quotes', () => {
             {
                 commandType: 'light',
                 brightness: 1,
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -722,8 +722,8 @@ test('complex example', () => {
                 radius: 1000,
                 resource: 'http://127.0.0.1/music/spam/rickroll/Never_gonna_give_you_up.mp3',
                 targetName: 'Mplayer',
-            }
-        ]
+            },
+        ],
     });
 });
 
@@ -734,7 +734,22 @@ test('picture with update', () => {
                 commandType: 'picture',
                 resource: 'example.jpg',
                 update: 500,
-            }
-        ]
+            },
+        ],
     });
+});
+
+test.each(['français', 'a.b.c.', 'Mars123'])('simple world name check (%p)', (testWorldName) => {
+    expect(parser.parse(`bump teleport ${testWorldName}`)).toStrictEqual({
+        bump: [
+            {
+                commandType: 'teleport',
+                worldName: testWorldName,
+            },
+        ],
+    });
+});
+
+test('world name cannot start with a digit', () => {
+    expect(parser.parse('bump teleport 1abcd')).toStrictEqual({});
 });

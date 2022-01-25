@@ -208,8 +208,7 @@ ActionString {
 
   // Teleport command (TODO: check relative/absolute altitude behavior on AW)
   TeleportCommand  = caseInsensitive<"teleport"> worldName? WorldCoordinates?
-  worldName        = worldString
-  worldString      = letter+ (letter | digit)*
+  worldName        = ~digit (~";" ~"," ~" " ~signStringQuote any)+
   WorldCoordinates = (AbsoluteCoordinates | RelativeCoordinates) altitude? direction?
   RelativeCoordinates = forceSignedFloat forceSignedFloat
   AbsoluteCoordinates = nsCoordinate ewCoordinate
@@ -428,7 +427,7 @@ class AWActionParser {
             Action(trigger, commands, _) { // eslint-disable-line no-unused-vars
                 return {
                     trigger: trigger.parse(),
-                    commands: commands.asIteration().children.map(c => c.parse())
+                    commands: commands.asIteration().children.map(c => c.parse()),
                 };
             },
             MultiArgumentCommand(commandName, commandArguments) {
@@ -547,18 +546,21 @@ class AWActionParser {
                 }
             },
             TeleportCommand(commandName, worldName, worldCoordinates) {
-                const world = worldName.children.map(c => c.parse());
-                return {
+                let command = {
                     commandType: 'teleport',
-                    worldName: world.length > 0 ? world : undefined,
-                    coordinates: worldCoordinates.children.map(c => c.parse()),
                 };
+                const world = worldName.children.map(c => c.parse());
+                if (world.length > 0) {
+                    command.worldName = world[0];
+                }
+                const coordinates = worldCoordinates.children.map(c => c.parse());
+                if (coordinates.length > 0) {
+                    command.coordinates = coordinates[0];
+                }
+                return command;
             },
-            worldName(worldString) {
-                return worldString.parse();
-            },
-            worldString(firstPart, secondPart) {
-                return firstPart.children.map(c => c.parse()).join('') + secondPart.children.map(c => c.parse()).join('');
+            worldName(name) {
+                return name.children.map(c => c.parse()).join('');
             },
             signedFloat(sign, float) {
                 return toSignedFloat(sign, float);
@@ -612,7 +614,9 @@ class AWActionParser {
             invalidCommand(command) {
                 return {commandType: 'invalid', commandText: command.children.map(c => c.parse()).join('')};
             },
-            _terminal() { return this.sourceString; }
+            _terminal() {
+                return this.sourceString;
+            },
         });
     }
 
