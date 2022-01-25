@@ -4,3 +4,4 @@ build/
 jest.config.*
 
 src/*.test.js
+.eslintrc.cjs
