@@ -231,12 +231,12 @@ ActionString {
   // Warp command
   WarpCommand = caseInsensitive<"warp"> WorldCoordinates
 }
-`
+`;
 
 // Some unwanted unicode characters can appear in propdumps
-const UNWANTED_CHARS = /\x80|\x7F/g
+const UNWANTED_CHARS = /\x80|\x7F/g;
 function cleanActionString(actionString) {
-    return actionString.replace(UNWANTED_CHARS, "");
+    return actionString.replace(UNWANTED_CHARS, '');
 }
 
 // Scale command properties, see http://wiki.activeworlds.com/index.php?title=Scale
@@ -271,13 +271,13 @@ function resolveIncompleteCoordinates(coordinates) {
     let [x, y, z] = [coordinates[0], coordinates[1], coordinates[2]];
 
     if (coordinates.length === 1) {
-      return {x: 0, y: x, z: 0};
+        return {x: 0, y: x, z: 0};
     } else if (coordinates.length === 2) {
-      return {x, y, z: 0};
+        return {x, y, z: 0};
     } else if (coordinates.length === 3) {
-      return {x, y, z};
+        return {x, y, z};
     } else {
-      return {x: 0, y: 0, z: 0};
+        return {x: 0, y: 0, z: 0};
     }
 }
 
@@ -285,13 +285,13 @@ function resolveIncompleteScaleCoordinates(coordinates) {
     let [x, y, z] = coordinates.map(clampScale, coordinates);
 
     if (coordinates.length === 1) {
-      return {x: x, y: x, z: x};
+        return {x: x, y: x, z: x};
     } else if (coordinates.length === 2) {
-      return {x, y, z: 1};
+        return {x, y, z: 1};
     } else if (coordinates.length === 3) {
-      return {x, y, z};
+        return {x, y, z};
     } else {
-      return {x, y, z};
+        return {x, y, z};
     }
 }
 
@@ -303,7 +303,8 @@ function toSignedFloat(sign, float) {
     }
 }
 
-const ULLONG_MAX = 18446744073709551615;
+// Should be 18446744073709551615 but JavaScript doesn't go that high
+const ULLONG_MAX = 18446744073709552000;
 
 function rgb(red, green, blue) {
     // Clamp values just in case
@@ -311,7 +312,7 @@ function rgb(red, green, blue) {
         r: Math.max(0, Math.min(red,   255)),
         g: Math.max(0, Math.min(green, 255)),
         b: Math.max(0, Math.min(blue,  255)),
-    }
+    };
 }
 
 const PRESET_COLORS = {
@@ -349,7 +350,7 @@ const PRESET_COLORS = {
     yellow:      rgb(255, 255,   0),
 };
 
-const ALLOWED_EMPTY_COMMANDS = ['examine', 'sign']
+const ALLOWED_EMPTY_COMMANDS = ['examine', 'sign'];
 
 function colorStringToRGB(colorString) {
     if (colorString in PRESET_COLORS) {
@@ -421,14 +422,14 @@ class AWActionParser {
 
         this.semantics = this.grammar.createSemantics();
         this.semantics.addOperation('parse', {
-            Actions(actions, _) {
+            Actions(actions, _) { // eslint-disable-line no-unused-vars
                 return actions.asIteration().children.map(c => c.parse());
             },
-            Action(trigger, commands, _) {
+            Action(trigger, commands, _) { // eslint-disable-line no-unused-vars
                 return {
                     trigger: trigger.parse(),
                     commands: commands.asIteration().children.map(c => c.parse())
-                }
+                };
             },
             MultiArgumentCommand(commandName, commandArguments) {
                 return resolveCommand(commandName.children.map(c => c.parse())[0], commandArguments);
@@ -440,7 +441,7 @@ class AWActionParser {
                 return parseFloat([].concat(integral.children.map(c => c.parse()), ['.'], fractional.children.map(c => c.parse())).join(''));
             },
             float_whole(number) {
-                return parseFloat(number.children.map(c => c.parse()).join(''))
+                return parseFloat(number.children.map(c => c.parse()).join(''));
             },
             float(floatType) {
                 return floatType.parse();
@@ -452,7 +453,7 @@ class AWActionParser {
                 return input.children.map(c => c.parse()).join('');
             },
             resourceTarget(input) {
-                return ['resource', input.children.map(c => c.parse()).join('')]
+                return ['resource', input.children.map(c => c.parse()).join('')];
             },
             objectName(name) {
                 return name.children.map(c => c.children.map(d => d.parse()).join('')).join('');
@@ -461,16 +462,16 @@ class AWActionParser {
                 return ['targetName', name.children.map(c => c.children.map(d => d.parse()).join('')).join('')];
             },
             namedParameter(parameterName, _, value) {
-                return [parameterName.parse(), value.parse()]
+                return [parameterName.parse(), value.parse()];
             },
             nameParameter(name) {
                 return ['targetName', name.parse()[1]];
             },
             boolean(boolean) {
                 const bool = boolean.parse();
-                if (bool == "on" || bool == "true" || bool == "yes") {
+                if (bool == 'on' || bool == 'true' || bool == 'yes') {
                     return true;
-                } else if (bool == "off" || bool == "false" || bool == "no") {
+                } else if (bool == 'off' || bool == 'false' || bool == 'no') {
                     return false;
                 } else {
                     return undefined;
@@ -487,8 +488,8 @@ class AWActionParser {
                     return ['color', color.parse()];
                 }
             },
-            ExamineCommand(_) {
-                return {commandType: 'examine'}
+            ExamineCommand(_) { // eslint-disable-line no-unused-vars
+                return {commandType: 'examine'};
             },
             RotateDistances(coordinates) {
                 return ['speed', resolveIncompleteCoordinates(coordinates.children.map(c => c.parse()))];
@@ -513,21 +514,21 @@ class AWActionParser {
                     coordinates: coordinates.parse(),
                     altitude: altitude.children.map(c => c.parse())[0],
                     direction: direction ? direction.children.map(c => c.parse())[0] : null,
-                }
+                };
             },
             RelativeCoordinates(x, y) {
                 return {
                     coordinateType: 'relative',
                     x: x.parse(),
                     y: y.parse(),
-                }
+                };
             },
             AbsoluteCoordinates(x, y) {
                 return {
                     coordinateType: 'absolute',
                     NS: x.parse(),
                     EW: y.parse(),
-                }
+                };
             },
             nsCoordinate(float, axis) {
                 const axisLetter = axis.parse();
@@ -551,7 +552,7 @@ class AWActionParser {
                     commandType: 'teleport',
                     worldName: world.length > 0 ? world : undefined,
                     coordinates: worldCoordinates.children.map(c => c.parse()),
-                }
+                };
             },
             worldName(worldString) {
                 return worldString.parse();
@@ -565,17 +566,17 @@ class AWActionParser {
             forceSignedFloat(sign, float) {
                 return toSignedFloat(sign, float);
             },
-            altitude(sign, float, _) {
+            altitude(sign, float, _) { // eslint-disable-line no-unused-vars
                 if (sign.children.map(c => c.parse()).length > 0) {
                     return {
                         altitudeType: 'relative',
                         value: toSignedFloat(sign, float),
-                    }
+                    };
                 } else {
                     return {
                         altitudeType: 'absolute',
                         value: toSignedFloat(sign, float),
-                    }
+                    };
                 }
             },
             syncStatus(status) {
@@ -602,7 +603,7 @@ class AWActionParser {
             signText(text) {
                 return ['text', text.parse()];
             },
-            signQuotedText(_, text, __) {
+            signQuotedText(_, text, __) { // eslint-disable-line no-unused-vars
                 return text.children.map(c => c.parse()).join('');
             },
             signUnquotedText(text) {
