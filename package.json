@@ -8,10 +8,13 @@
     "ohm-js": "^16.2.0"
   },
   "devDependencies": {
+    "eslint": "^8.7.0",
+    "eslint-plugin-jest": "^26.0.0",
     "jest": "^27.4.7"
   },
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest",
+    "lint": "eslint src/*.js"
   },
   "repository": {
     "type": "git",
