@@ -50,3 +50,9 @@ The `parse()` function will then return an object looking like this:
 Unit tests are essential for this kind of project and you can run them with:
 
     npm test
+
+## Linting
+
+You can ensure linting is passing properly by running:
+
+    npm run lint
