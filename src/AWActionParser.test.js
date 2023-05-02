@@ -18,6 +18,7 @@ test('good string has empty debug information', () => {
     expect(parser.debug('create color green;').length).toBe(0);
 });
 
+
 test('create color green', () => {
     expect(parser.parse('create color green')).toStrictEqual({
         create: [
@@ -292,6 +293,18 @@ test('create visible off', () => {
     });
 });
 
+test('create visible named off', () => {
+    expect(parser.parse('create visible named off')).toStrictEqual({
+        create: [
+            {
+                commandType: 'visible',
+                value: false,
+                targetName: 'named',
+            },
+        ],
+    });
+});
+
 test('create visible false', () => {
     expect(parser.parse('create visible false')).toStrictEqual({
         create: [
@@ -428,7 +441,21 @@ test('create texture with mask and tag', () => {
         ],
     });
 });
-
+/*
+test('create animate me stone3', () => {
+    expect(parser.parse('create animate me stone3')).toStrictEqual({
+        create: [
+            {
+                commandType: 'animate',
+                targetName: 'me',
+                texture: 'stone3',
+                maskStatus: 'nomask',
+                tag: 'none',
+            },
+        ],
+    });
+});
+*/
 test('create rotate & move with reset', () => {
     expect(parser.parse('create rotate 0 0 0 reset, move 0 0 2 loop reset time=5 wait=1')).toStrictEqual({
         create: [
@@ -470,6 +497,106 @@ test('create sign with args', () => {
         ],
     });
 });
+
+test('create opacity 1.0 == 1.0', () => {
+    expect(parser.parse('create opacity 1.0')).toStrictEqual({
+        create: [
+            {
+                commandType: 'opacity',
+                opacity: 1.0,
+            },
+        ],
+    });
+});
+
+test('create opacity -0.5 == 0.0', () => {
+    expect(parser.parse('create opacity -0.05')).toStrictEqual({
+        create: [
+            {
+                commandType: 'opacity',
+                opacity: 0.0,
+            },
+        ],
+    });
+});
+
+test('create opacity 2.5 == 1.0', () => {
+    expect(parser.parse('create opacity 2.5')).toStrictEqual({
+        create: [
+            {
+                commandType: 'opacity',
+                opacity: 1.0,
+            },
+        ],
+    });
+});
+
+test('create opacity on target name', () => {
+    expect(parser.parse('create opacity 1.0 name=wowsuchinvisible')).toStrictEqual({
+        create: [
+            {
+                commandType: 'opacity',
+                opacity: 1.0,
+                targetName: 'wowsuchinvisible',
+            },
+        ],
+    });
+});
+
+test('create opacity on target name with tag', () => {
+    expect(parser.parse('create opacity 1.0 name=wowsuchinvisible tag=100')).toStrictEqual({
+        create: [
+            {
+                commandType: 'opacity',
+                opacity: 1.0,
+                targetName: 'wowsuchinvisible',
+                tag: '100',
+            },
+        ],
+    });
+});
+
+//
+
+test('create ambient on target name with tag', () => {
+    expect(parser.parse('create ambient 1.0 name=wowsuchambient tag=100')).toStrictEqual({
+        create: [
+            {
+                commandType: 'ambient',
+                intensity: 1.0,
+                targetName: 'wowsuchambient',
+                tag: '100',
+            },
+        ],
+    });
+});
+
+test('create diffuse on target name with tag', () => {
+    expect(parser.parse('create diffuse 1.0 name=wowsuchdiffusion tag=100')).toStrictEqual({
+        create: [
+            {
+                commandType: 'diffuse',
+                intensity: 1.0,
+                targetName: 'wowsuchdiffusion',
+                tag: '100',
+            },
+        ],
+    });
+});
+
+test('create specular on target name with tag and shininess', () => {
+    expect(parser.parse('create specular name=wowsuchspecularity tag=100 1')).toStrictEqual({
+        create: [
+            {
+                commandType: 'specular',
+                intensity: 1.0,
+                targetName: 'wowsuchspecularity',
+                tag: '100',
+            },
+        ],
+    });
+});
+
 
 test('create picture', () => {
     expect(parser.parse('create picture http://www.example.com/sample.jpg')).toStrictEqual({
@@ -613,6 +740,17 @@ test('sign text with quotes', () => {
     });
 });
 
+test('sign text with quotes, trigger and command case-insensitive but not the string', () => {
+    expect(parser.parse('create sign "I AM THE SENATE"')).toStrictEqual({
+        create: [
+            {
+                commandType: 'sign',
+                text: 'I AM THE SENATE',
+            },
+        ],
+    });
+});
+
 test('sign text without quotes', () => {
     expect(parser.parse('create sign i_am_the_sign_text')).toStrictEqual({
         create: [
@@ -727,6 +865,133 @@ test('complex example', () => {
     });
 });
 
+
+// Say Command
+
+test('say text with quotes', () => {
+    expect(parser.parse('create say "i am the say text"')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: 'i am the say text',
+            },
+        ],
+    });
+});
+
+test('say text without quotes', () => {
+    expect(parser.parse('create say i_am_the_say_text')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: 'i_am_the_say_text',
+            },
+        ],
+    });
+});
+
+test('say text with unquoted unicode', () => {
+    expect(parser.parse('create say 🙃')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: '🙃',
+            },
+        ],
+    });
+});
+
+test('say text with quoted unicode', () => {
+    expect(parser.parse('create say "こんにちは!"')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: 'こんにちは!',
+            },
+        ],
+    });
+});
+
+test('say text with quoted unicode and other things after', () => {
+    expect(parser.parse('create say "こんにちは!"; activate say 🙃')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: 'こんにちは!',
+            },
+        ],
+        activate: [
+            {
+                commandType: 'say',
+                text: '🙃',
+            },
+        ],
+    });
+});
+
+test('say text with only one quote', () => {
+    expect(parser.parse('create say "; activate something')).toStrictEqual({
+        create: [
+            {
+                commandType: 'say',
+                text: '; activate something',
+            },
+        ],
+    });
+});
+
+test('invalid say text without quotes', () => {
+    expect(parser.parse('create say i am the say text, light brightness=1')).toStrictEqual({
+        create: [
+            {
+                commandType: 'light',
+                brightness: 1,
+            },
+        ],
+    });
+});
+
+
+test('create light color=green', () => {
+    expect(parser.parse('create light color=green')).toStrictEqual({
+        create: [
+            {
+                commandType: 'light',
+                color: {
+                    'r': 0,
+                    'g': 255,
+                    'b': 0,
+                },
+            },
+
+        ],
+    });
+});
+
+test('create color with create light color=', () => {
+    expect(parser.parse('create color blue, light color=red')).toStrictEqual({
+        create: [
+            {
+                commandType: 'color',
+                color: {
+                    'r': 0,
+                    'g': 0,
+                    'b': 255,
+                },
+            },
+            {
+                commandType: 'light',
+                color: {
+                    'r': 255,
+                    'g': 0,
+                    'b': 0,
+                },
+            },
+        ],
+    });
+});
+
+
 test('picture with update', () => {
     expect(parser.parse('create picture example.jpg update=500')).toStrictEqual({
         create: [
@@ -750,6 +1015,29 @@ test.each(['français', 'a.b.c.', 'Mars123'])('simple world name check (%p)', (t
     });
 });
 
+// is this really necessary, though?
 test('world name cannot start with a digit', () => {
     expect(parser.parse('bump teleport 1abcd')).toStrictEqual({});
+});
+
+test('(case insensitivity) cREAtE color green', () => {
+    expect(parser.parse('cREAtE color green')).toStrictEqual({
+        create: [
+            {
+                commandType: 'color',
+                color: {r: 0, g: 255, b: 0},
+            },
+        ],
+    });
+});
+
+test('(case insensitivity) cREAtE COLOr green', () => {
+    expect(parser.parse('cREAtE COLOr green')).toStrictEqual({
+        create: [
+            {
+                commandType: 'color',
+                color: {r: 0, g: 255, b: 0},
+            },
+        ],
+    });
 });

@@ -19,6 +19,7 @@ ActionString {
 
   // Command index
   Command   = TextureCommand
+            | AnimateCommand
             | SoundCommand
             | CoronaCommand
             | ColorCommand
@@ -31,8 +32,13 @@ ActionString {
             | ScaleCommand
             | LightCommand
             | NoiseCommand
+            | OpacityCommand
+            | AmbientCommand
+            | DiffuseCommand
+            | SpecularCommand
             | PictureCommand
             | MediaCommand
+            | SayCommand
             | SignCommand
             | TeleportCommand
             | WarpCommand
@@ -44,6 +50,11 @@ ActionString {
   disabled = "off" | "false" | "no"
   booleanArgument = boolean
   boolean  = enabled | disabled
+
+  // Mask status
+  maskStatus = mask | nomask
+  mask       = "mask"
+  nomask     = "nomask"
 
   // Loop status
   loopStatus = loop | noloop
@@ -96,6 +107,11 @@ ActionString {
 
   tagParameter = namedParameter<"tag", tagName>
   tagName = basicResourceTarget
+
+  // Animate command
+  AnimateCommand = MultiArgumentCommand<caseInsensitive<"animate">, AnimateArgument>
+  AnimateArgument = tagParameter | maskStatus | nameArgument | animateTextureName
+  animateTextureName = basicResourceTarget
 
   // Color command
   ColorCommand  = MultiArgumentCommand<caseInsensitive<"color">, ColorArgument>
@@ -187,6 +203,24 @@ ActionString {
   NoiseArgument = overlapStatus | resourceTarget
   overlapStatus = "overlap"
 
+  // Opacity command
+  OpacityCommand = MultiArgumentCommand<caseInsensitive<"opacity">, OpacityArgument>
+  OpacityArgument = opacityValue | tagParameter | nameParameter
+  opacityValue = signedFloat
+
+  // Ambient command
+  AmbientCommand = MultiArgumentCommand<caseInsensitive<"ambient">, AmbientArgument>
+  AmbientArgument = intensityValue | tagParameter | nameParameter
+  intensityValue = signedFloat
+
+  // Diffuse command
+  DiffuseCommand = MultiArgumentCommand<caseInsensitive<"diffuse">, DiffuseArgument>
+  DiffuseArgument = intensityValue | tagParameter | nameParameter
+
+  // Specular command
+  SpecularCommand = MultiArgumentCommand<caseInsensitive<"specular">, SpecularArgument>
+  SpecularArgument = intensityValue | tagParameter | nameParameter // TODO: Add shininessValue, alphaValue
+
   // Picture command
   PictureCommand  = MultiArgumentCommand<caseInsensitive<"picture">, PictureArgument>
   PictureArgument = updateParameter | nameParameter | resourceTarget
@@ -196,6 +230,14 @@ ActionString {
   // Media command
   MediaCommand  = MultiArgumentCommand<caseInsensitive<"media">, MediaArgument>
   MediaArgument = nameParameter | radiusParameter | resourceTarget
+
+  // Say command
+  SayCommand = MultiArgumentCommand<caseInsensitive<"say">, SayArgument>
+  SayArgument = sayText
+  sayText = signQuotedText | signUnquotedText
+  sayStringQuote = "\\""
+  sayUnquotedText = (~";" ~"," ~" " any)+
+  sayQuotedText = sayStringQuote (~sayStringQuote any)* sayStringQuote?
 
   // Sign command
   SignCommand = MultiArgumentCommand<caseInsensitive<"sign">, SignArgument>
@@ -237,6 +279,8 @@ const UNWANTED_CHARS = /\x80|\x7F/g;
 function cleanActionString(actionString) {
     return actionString.replace(UNWANTED_CHARS, '');
 }
+
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 // Scale command properties, see http://wiki.activeworlds.com/index.php?title=Scale
 const SCALE_MIN = 0.2;
@@ -378,7 +422,10 @@ function colorStringToRGB(colorString) {
 
 function mergeActions(actions) {
     let simplifiedData = {};
-    for (const action of actions) {
+    for (let action of actions) {
+        // needed so triggers are case-insensitive
+        action.trigger = action.trigger.toLowerCase();
+
         if (action.trigger && !(action.trigger in simplifiedData)) {
             // Only the first action should be kept
             const mergedCommands = mergeCommands(action.commands);
@@ -398,6 +445,8 @@ function mergeCommands(commands) {
             // Remove invalid commands (usually due to duplicated parameters)
             continue;
         }
+        // needed so commands are case-insensitive
+        command.commandType = command.commandType.toLowerCase();
         if (!ALLOWED_EMPTY_COMMANDS.includes(command.commandType) && Object.keys(command).length == 1) {
             // Remove commands without parameters
             continue;
@@ -448,6 +497,9 @@ class AWActionParser {
             textureName(input) {
                 return ['texture', input.parse()];
             },
+            animateTextureName(input) {
+                return ['texture', input.parse()];
+            },
             basicResourceTarget(input) {
                 return input.children.map(c => c.parse()).join('');
             },
@@ -489,6 +541,18 @@ class AWActionParser {
             },
             ExamineCommand(_) { // eslint-disable-line no-unused-vars
                 return {commandType: 'examine'};
+            },
+            opacityValue(value) {
+                // Values below 0.0 will get clamped to 0.0,
+                // Values above 1.0 will get clamped to 1.0.
+                const opacity = value.parse();
+                return ['opacity', clamp(opacity, 0.0, 1.0)];
+            },
+            intensityValue(value) {
+                // Values below 0.0 will get clamped to 0.0,
+                // Values above 1.0 will get clamped to 1.0.
+                const intensity = value.parse();
+                return ['intensity', clamp(intensity, 0.0, 1.0)];
             },
             RotateDistances(coordinates) {
                 return ['speed', resolveIncompleteCoordinates(coordinates.children.map(c => c.parse()))];
@@ -544,6 +608,23 @@ class AWActionParser {
                 } else {
                     return -1 * float.parse();
                 }
+            },
+            //, imagecount = 1, framecount = 1,
+            //framedelay = 0,
+            //framelist = []
+            // tagParameter? maskStatus? nameArgument animateTextureName
+            //  tagParameter | maskStatus | nameArgument | animateTextureName
+            AnimateCommand(commandName, tag = 'none', maskStatus = 'nomask',
+                name, animateTextureName,
+            ) {
+                let command = {
+                    commandType: 'animate',
+                };
+                command.tag = tag;
+                command.maskStatus = maskStatus;
+                command.targetName = name;
+                command.texture = animateTextureName;
+                return command;
             },
             TeleportCommand(commandName, worldName, worldCoordinates) {
                 let command = {
@@ -602,6 +683,15 @@ class AWActionParser {
                     return ['reset', false];
                 }
             },
+            sayText(text) {
+                return ['text', text.parse()];
+            },
+            sayQuotedText(_, text, __) { // eslint-disable-line no-unused-vars
+                return text.children.map(c => c.parse()).join('');
+            },
+            sayUnquotedText(text) {
+                return text.children.map(c => c.parse()).join('');
+            },
             signText(text) {
                 return ['text', text.parse()];
             },
@@ -623,6 +713,7 @@ class AWActionParser {
     // Return parsed action string
     parse(actionString) {
         const match = this.grammar.match(cleanActionString(actionString));
+
         if (match.succeeded()) {
             return mergeActions(this.semantics(match).parse());
         }
