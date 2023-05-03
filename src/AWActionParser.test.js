@@ -753,3 +753,14 @@ test.each(['français', 'a.b.c.', 'Mars123'])('simple world name check (%p)', (t
 test('world name cannot start with a digit', () => {
     expect(parser.parse('bump teleport 1abcd')).toStrictEqual({});
 });
+
+test('create light color=red', () => {
+    expect(parser.parse('create light color=red')).toStrictEqual({
+        create: [
+            {
+                commandType: 'light',
+                color: {r: 255, g: 0, b: 0},
+            },
+        ],
+    });
+});
